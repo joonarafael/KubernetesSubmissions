@@ -137,20 +137,20 @@ docker push <user>/<image>:<tag>
 
 ### Course links
 
-| Resource | URL |
-|----------|-----|
-| Course | https://courses.mooc.fi/org/uh-cs/courses/devops-with-kubernetes-2026 |
-| Example apps | https://github.com/kubernetes-hy/material-example |
-| Submissions template | https://github.com/mluukkai/KubernetesSubmissions |
+| Resource             | URL                                                                   |
+| -------------------- | --------------------------------------------------------------------- |
+| Course               | https://courses.mooc.fi/org/uh-cs/courses/devops-with-kubernetes-2026 |
+| Example apps         | https://github.com/kubernetes-hy/material-example                     |
+| Submissions template | https://github.com/mluukkai/KubernetesSubmissions                     |
 
 ---
 
 ## Local environment (this machine)
 
-| Tool | Version (when documented) |
-|------|---------------------------|
-| k3d | v5.9.0 |
-| kubectl client | v1.37.2 |
-| k3s (in cluster) | v1.35.5+k3s1 |
+| Tool             | Version (when documented) |
+| ---------------- | ------------------------- |
+| k3d              | v5.9.0                    |
+| kubectl client   | v1.37.2                   |
+| k3s (in cluster) | v1.35.5+k3s1              |
 
 **Cluster `k3s-default`** was running with Traefik, CoreDNS, and a `hashgenerator-dep` deployment.

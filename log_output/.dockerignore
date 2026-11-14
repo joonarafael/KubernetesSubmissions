@@ -1,9 +1,0 @@
-node_modules
-dist
-*.tsbuildinfo
-.git
-.gitignore
-*.md
-.env
-.env.*
-npm-debug.log*

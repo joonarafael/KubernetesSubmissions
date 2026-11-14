@@ -1,11 +1,15 @@
+# Build from the repository root:
+#   docker build -f log_output/Dockerfile -t log-output:1.1 .
 FROM node:24-alpine AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json tsconfig.json ./
-COPY src ./src
+COPY package.json package-lock.json tsconfig.base.json ./
+COPY --parents */package.json ./
+COPY log_output/tsconfig.json log_output/tsconfig.json
+COPY log_output/src log_output/src
 
-RUN npm ci && npm run build
+RUN npm ci && npm run build -w log-output
 
 FROM node:24-alpine
 
@@ -13,7 +17,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=build /app/dist ./dist
+COPY --from=build /app/log_output/dist ./dist
 
 USER node
 
