@@ -1,0 +1,15 @@
+# Apply from the repository root:
+#   kubectl apply -f ping_pong/manifests/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ping-pong
+spec:
+  type: ClusterIP
+  selector:
+    app: ping-pong
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: http
