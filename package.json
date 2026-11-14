@@ -1,0 +1,26 @@
+{
+    "name": "kubernetes-submissions",
+    "private": true,
+    "description": "DevOps with Kubernetes exercises. Shared tooling lives here; each microservice is an npm workspace.",
+    "workspaces": [
+        "log_output",
+        "the_project"
+    ],
+    "type": "module",
+    "scripts": {
+        "build": "npm run build --workspaces --if-present",
+        "fmt": "oxfmt",
+        "fmt:check": "oxfmt --check",
+        "lint": "oxlint",
+        "lint:fix": "oxlint --fix"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.1",
+        "oxfmt": "^0.78.0",
+        "oxlint": "^1.93.0",
+        "typescript": "^7.0.2"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

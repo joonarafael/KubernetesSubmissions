@@ -6,7 +6,7 @@
     "embeddedLanguageFormatting": "auto",
     "endOfLine": "lf",
     "htmlWhitespaceSensitivity": "css",
-    "ignorePatterns": ["node_modules"],
+    "ignorePatterns": ["node_modules", "dist", "package-lock.json"],
     "insertFinalNewline": true,
     "jsdoc": {
         "addDefaultToDescription": true,
@@ -23,7 +23,14 @@
     },
     "jsxSingleQuote": true,
     "objectWrap": "preserve",
-    "overrides": [],
+    "overrides": [
+        {
+            "files": ["*.md", "*.yml", "*.yaml"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ],
     "printWidth": 100,
     "proseWrap": "preserve", // must preserve, GitHub-specific markdown will otherwise break
     "quoteProps": "consistent",
