@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
-const randomString = randomUUID(),
- intervalMs = 5000;
+const intervalMs = 5000;
+const randomString = randomUUID();
 
 function logLine(): void {
   const timestamp = new Date().toISOString();
@@ -13,7 +13,6 @@ const timer = setInterval(logLine, intervalMs);
 
 function shutdown(): void {
   clearInterval(timer);
-  process.exit(0);
 }
 
 process.on("SIGTERM", shutdown);
