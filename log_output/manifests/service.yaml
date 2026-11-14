@@ -1,0 +1,15 @@
+# Apply from the repository root:
+#   kubectl apply -f log_output/manifests/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-output
+spec:
+  type: ClusterIP
+  selector:
+    app: log-output
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: http
