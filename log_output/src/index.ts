@@ -1,19 +1,19 @@
-import { randomUUID } from "node:crypto";
+import { randomUUID } from 'node:crypto';
 
 const intervalMs = 5000;
 const randomString = randomUUID();
 
 function logLine(): void {
-  const timestamp = new Date().toISOString();
-  console.log(`${timestamp}: ${randomString}`);
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp}: ${randomString}`);
 }
 
 logLine();
 const timer = setInterval(logLine, intervalMs);
 
 function shutdown(): void {
-  clearInterval(timer);
+    clearInterval(timer);
 }
 
-process.on("SIGTERM", shutdown);
-process.on("SIGINT", shutdown);
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
