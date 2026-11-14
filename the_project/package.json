@@ -1,0 +1,24 @@
+{
+    "name": "todo-app",
+    "version": "1.2.0",
+    "private": true,
+    "description": "Todo application web server. Prints the listen port on startup. The port is chosen with the PORT environment variable.",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "fmt": "oxfmt",
+        "fmt:check": "oxfmt --check",
+        "lint": "oxlint",
+        "lint:fix": "oxlint --fix",
+        "start": "node dist/index.js"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.1",
+        "oxfmt": "^0.78.0",
+        "oxlint": "^1.93.0",
+        "typescript": "^7.0.2"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}
