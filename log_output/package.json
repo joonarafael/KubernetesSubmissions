@@ -1,0 +1,24 @@
+{
+    "name": "log-output",
+    "version": "1.1.0",
+    "private": true,
+    "description": "Prints a random string generated at startup, with a timestamp, every 5 seconds.",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "fmt": "oxfmt",
+        "fmt:check": "oxfmt --check",
+        "lint": "oxlint",
+        "lint:fix": "oxlint --fix",
+        "start": "node dist/index.js"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.1",
+        "oxfmt": "^0.78.0",
+        "oxlint": "^1.93.0",
+        "typescript": "^7.0.2"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}
