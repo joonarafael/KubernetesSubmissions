@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
-const randomString = randomUUID();
-const intervalMs = 5_000;
+const randomString = randomUUID(),
+ intervalMs = 5000;
 
 function logLine(): void {
   const timestamp = new Date().toISOString();
