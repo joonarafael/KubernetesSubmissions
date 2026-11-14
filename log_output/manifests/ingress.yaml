@@ -1,5 +1,6 @@
 # Apply from the repository root:
 #   kubectl apply -f log_output/manifests/ingress.yaml
+# Shared by log-output (/) and ping-pong (/pingpong).
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -8,6 +9,13 @@ spec:
   rules:
     - http:
         paths:
+          - path: /pingpong
+            pathType: Prefix
+            backend:
+              service:
+                name: ping-pong
+                port:
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:

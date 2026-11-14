@@ -4,6 +4,7 @@
     "description": "DevOps with Kubernetes exercises. Shared tooling lives here; each microservice is an npm workspace.",
     "workspaces": [
         "log_output",
+        "ping_pong",
         "the_project"
     ],
     "type": "module",
