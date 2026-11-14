@@ -1,6 +1,6 @@
 # Build from the repository root:
 #   docker build -f the_project/Dockerfile -t todo-app:1.2 .
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY the_project/src the_project/src
 
 RUN npm ci && npm run build -w todo-app
 
-FROM node:24-alpine
+FROM node:26-alpine
 
 WORKDIR /app
 

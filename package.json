@@ -15,12 +15,12 @@
         "lint:fix": "oxlint --fix"
     },
     "devDependencies": {
-        "@types/node": "^24.10.1",
+        "@types/node": "^26.6.6",
         "oxfmt": "^0.78.0",
         "oxlint": "^1.93.0",
         "typescript": "^7.0.2"
     },
     "engines": {
-        "node": ">=24"
+        "node": ">=26"
     }
 }
