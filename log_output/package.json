@@ -1,8 +1,8 @@
 {
     "name": "log-output",
-    "version": "1.1.0",
+    "version": "1.7.0",
     "private": true,
-    "description": "Prints a random string generated at startup, with a timestamp, every 5 seconds.",
+    "description": "Prints a random string generated at startup, with a timestamp, every 5 seconds. GET / returns the current timestamp and that string.",
     "type": "module",
     "scripts": {
         "build": "tsc",
