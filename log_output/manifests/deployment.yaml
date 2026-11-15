@@ -1,4 +1,6 @@
-# Apply from the repository root:
+# Apply from the repository root, after the shared volume manifests:
+#   kubectl apply -f manifests/persistentvolume.yaml
+#   kubectl apply -f manifests/persistentvolumeclaim.yaml
 #   kubectl apply -f log_output/manifests/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -14,12 +16,15 @@ spec:
       labels:
         app: log-output
     spec:
+      securityContext:
+        fsGroup: 1000
       volumes:
-        - name: shared-log
-          emptyDir: {}
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: shared-data
       containers:
         - name: log-writer
-          image: log-output:1.10
+          image: log-output:1.11
           imagePullPolicy: IfNotPresent
           command:
             - node
@@ -28,10 +33,10 @@ spec:
             - name: LOG_FILE
               value: /usr/src/app/files/log.txt
           volumeMounts:
-            - name: shared-log
+            - name: shared-data
               mountPath: /usr/src/app/files
         - name: log-reader
-          image: log-output:1.10
+          image: log-output:1.11
           imagePullPolicy: IfNotPresent
           command:
             - node
@@ -41,10 +46,12 @@ spec:
               value: '8080'
             - name: LOG_FILE
               value: /usr/src/app/files/log.txt
+            - name: PING_FILE
+              value: /usr/src/app/files/pings.txt
           ports:
             - name: http
               containerPort: 8080
           volumeMounts:
-            - name: shared-log
+            - name: shared-data
               mountPath: /usr/src/app/files
               readOnly: true

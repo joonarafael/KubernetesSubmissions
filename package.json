@@ -1,7 +1,7 @@
 {
     "name": "kubernetes-submissions",
     "private": true,
-    "description": "DevOps with Kubernetes exercises. Shared tooling lives here; each microservice is an npm workspace.",
+    "description": "",
     "workspaces": [
         "log_output",
         "ping_pong",

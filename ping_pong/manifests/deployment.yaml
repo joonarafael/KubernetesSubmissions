@@ -1,4 +1,6 @@
-# Apply from the repository root:
+# Apply from the repository root, after the shared volume manifests:
+#   kubectl apply -f manifests/persistentvolume.yaml
+#   kubectl apply -f manifests/persistentvolumeclaim.yaml
 #   kubectl apply -f ping_pong/manifests/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -14,13 +16,24 @@ spec:
       labels:
         app: ping-pong
     spec:
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: shared-data
       containers:
         - name: ping-pong
-          image: ping-pong:1.9
+          image: ping-pong:1.11
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
               value: '8080'
+            - name: PING_FILE
+              value: /usr/src/app/files/pings.txt
           ports:
             - name: http
               containerPort: 8080
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/files

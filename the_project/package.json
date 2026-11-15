@@ -2,7 +2,7 @@
     "name": "todo-app",
     "version": "1.5.0",
     "private": true,
-    "description": "Todo application web server. GET / returns an HTML page. Prints the listen port on startup. The port is chosen with the PORT environment variable.",
+    "description": "",
     "type": "module",
     "scripts": {
         "build": "tsc",

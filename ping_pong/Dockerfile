@@ -1,5 +1,5 @@
 # Build from the repository root:
-#   docker build -f ping_pong/Dockerfile -t ping-pong:1.9 .
+#   docker build -f ping_pong/Dockerfile -t ping-pong:1.11 .
 FROM node:26-alpine AS build
 
 WORKDIR /app
