@@ -1,3 +1,4 @@
+import { pingFilePath, readPingCount } from './ping-file.js';
 import { createServer } from 'node:http';
 import { logFilePath } from './log-file.js';
 import { readFile } from 'node:fs/promises';
@@ -11,6 +12,11 @@ const HTTP_SERVICE_UNAVAILABLE = 503;
 const FILE_NOT_FOUND = 'ENOENT';
 
 const filePath = logFilePath(process.env.LOG_FILE);
+const pingPath = pingFilePath(process.env.PING_FILE);
+
+function statusResponse(logContent: string, pingCount: number): string {
+    return `${logContent.trim()}.\nPing / Pongs: ${pingCount}\n`;
+}
 
 function parsePort(value: string | undefined): number {
     if (typeof value !== 'string' || value === '') {
@@ -58,10 +64,12 @@ const server = createServer((request, response) => {
     }
 
     readFile(filePath, 'utf8')
-        .then((content) => {
-            response.writeHead(HTTP_OK, { 'content-type': 'text/plain; charset=utf-8' });
-            response.end(content);
-        })
+        .then((content) =>
+            readPingCount(pingPath).then((pingCount) => {
+                response.writeHead(HTTP_OK, { 'content-type': 'text/plain; charset=utf-8' });
+                response.end(statusResponse(content, pingCount));
+            }),
+        )
         .catch((error: unknown) => {
             if (isFileNotFound(error)) {
                 response.writeHead(HTTP_SERVICE_UNAVAILABLE, {
@@ -87,6 +95,7 @@ server.listen(port, '0.0.0.0', () => {
     }
 
     console.log(`Reading log file ${filePath}`);
+    console.log(`Reading ping count ${pingPath}`);
     console.log(`Server started in port ${boundPort}`);
 });
 
