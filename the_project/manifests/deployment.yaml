@@ -1,4 +1,6 @@
-# Apply from the repository root:
+# Apply from the repository root, after the project volume manifests:
+#   kubectl apply -f the_project/manifests/persistentvolume.yaml
+#   kubectl apply -f the_project/manifests/persistentvolumeclaim.yaml
 #   kubectl apply -f the_project/manifests/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -14,13 +16,28 @@ spec:
       labels:
         app: todo-app
     spec:
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: todo-image
+          persistentVolumeClaim:
+            claimName: todo-image
       containers:
         - name: todo-app
-          image: todo-app:1.5
+          image: todo-app:1.12
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
               value: '8080'
+            - name: IMAGE_DIR
+              value: /usr/src/app/files
+            - name: IMAGE_MAX_AGE_SECONDS
+              value: '600'
+            - name: PICTURE_URL
+              value: https://picsum.photos/1200
           ports:
             - name: http
               containerPort: 8080
+          volumeMounts:
+            - name: todo-image
+              mountPath: /usr/src/app/files
