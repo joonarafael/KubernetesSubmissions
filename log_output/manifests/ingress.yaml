@@ -5,6 +5,26 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: log-output
+  annotations:
+    traefik.ingress.kubernetes.io/router.priority: '50'
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: log-output
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ping-pong
+  annotations:
+    traefik.ingress.kubernetes.io/router.priority: '100'
 spec:
   rules:
     - http:
@@ -14,12 +34,5 @@ spec:
             backend:
               service:
                 name: ping-pong
-                port:
-                  number: 8080
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: log-output
                 port:
                   number: 8080

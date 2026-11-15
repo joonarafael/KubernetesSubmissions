@@ -1,5 +1,5 @@
 # Build from the repository root:
-#   docker build -f log_output/Dockerfile -t log-output:1.7 .
+#   docker build -f log_output/Dockerfile -t log-output:1.10 .
 FROM node:26-alpine AS build
 
 WORKDIR /app
@@ -21,4 +21,4 @@ COPY --from=build /app/log_output/dist ./dist
 
 USER node
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/reader.js"]
