@@ -10,6 +10,7 @@ const HTTP_INTERNAL_SERVER_ERROR = 500;
 const IMAGE_PATH = '/image';
 const SHUTDOWN_PATH = '/shutdown';
 const SHUTDOWN_EXIT_DELAY_MS = 1000;
+const TODO_MAX_LENGTH = 140;
 
 function parsePort(value: string | undefined): number {
     if (typeof value !== 'string' || value === '') {
@@ -54,10 +55,59 @@ const INDEX_PAGE = `<!DOCTYPE html>
   img {
     display: block;
     margin: 1.5rem auto;
-    width: min(100%, 28rem);
+    width: min(100%, 18rem);
     height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 16%);
   }
-  button {
+  .todo-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 36rem;
+    margin: 1.75rem auto 0;
+  }
+  .todo-form input {
+    flex: 1 1 16rem;
+    min-width: 0;
+    padding: 0.65rem 0.8rem;
+    border: 2px solid #43a047;
+    border-radius: 0.4rem;
+    background: #ffffff;
+    color: inherit;
+    font: inherit;
+  }
+  .todo-form button {
+    padding: 0.65rem 1.3rem;
+    border: 0;
+    border-radius: 0.4rem;
+    background: #43a047;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .todos {
+    max-width: 40rem;
+    margin: 0.5rem auto 0;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+  }
+  .todos li {
+    margin: 0.75rem 0;
+    padding: 1rem 1.1rem;
+    background: #f7f7f7;
+    border-left: 4px solid #43a047;
+    border-radius: 0.35rem;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+  }
+  .course {
+    margin-top: 2.5rem;
+  }
+  .shutdown {
     margin-top: 2rem;
   }
 </style>
@@ -65,10 +115,20 @@ const INDEX_PAGE = `<!DOCTYPE html>
 <body>
 <main>
 <h1>Todo App</h1>
-<img src="/image" alt="Hourly picture" width="480">
-<p>DevOps with Kubernetes 2026</p>
+<img src="/image" alt="Hourly picture" width="288">
+<div class="todo-form">
+<input id="todo" type="text" maxlength="${TODO_MAX_LENGTH}" placeholder="Enter a new todo (max ${TODO_MAX_LENGTH} characters)" aria-label="New todo" autocomplete="off">
+<button type="button">Send</button>
+</div>
+<h2>Todos</h2>
+<ul class="todos">
+<li>Learn Kubernetes basics</li>
+<li>Deploy application to cluster</li>
+<li>Configure persistent volumes</li>
+</ul>
+<p class="course">DevOps with Kubernetes 2026</p>
 <form action="/shutdown" method="post">
-<button type="submit">Shut down</button>
+<button class="shutdown" type="submit">Shut down</button>
 </form>
 </main>
 </body>
