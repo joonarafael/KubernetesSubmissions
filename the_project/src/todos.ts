@@ -1,4 +1,3 @@
-const DEFAULT_TODO_BACKEND_URL = 'http://todo-backend:8080/todos';
 const FETCH_TIMEOUT_MS = 2000;
 const TODO_READ_ERROR = 'TodoReadError';
 const TODO_MIN_LENGTH = 1;
@@ -6,7 +5,7 @@ const TODO_MAX_LENGTH = 140;
 
 export function todoBackendUrl(value: string | undefined): string {
     if (typeof value !== 'string' || value === '') {
-        return DEFAULT_TODO_BACKEND_URL;
+        throw new Error('TODO_BACKEND_URL is not configured');
     }
 
     return value;

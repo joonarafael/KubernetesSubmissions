@@ -4,7 +4,6 @@ import { cacheErrorMessage, createImageCache, pictureUrl } from './image-cache.j
 import { readTodos, todoBackendUrl, todoErrorMessage } from './todos.js';
 import { renderIndexPage } from './page.js';
 
-const DEFAULT_PORT = 8080;
 const MAX_PORT = 65_535;
 const HTTP_OK = 200;
 const HTTP_NOT_FOUND = 404;
@@ -15,7 +14,7 @@ const SHUTDOWN_EXIT_DELAY_MS = 1000;
 
 function parsePort(value: string | undefined): number {
     if (typeof value !== 'string' || value === '') {
-        return DEFAULT_PORT;
+        throw new Error('PORT is not configured');
     }
 
     if (!/^\d{1,5}$/u.test(value)) {

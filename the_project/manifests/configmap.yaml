@@ -1,0 +1,13 @@
+# Apply from the repository root:
+#   kubectl apply -f the_project/manifests/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-app-config
+  namespace: project
+data:
+  PORT: '8080'
+  IMAGE_DIR: /usr/src/app/files
+  IMAGE_MAX_AGE_SECONDS: '600'
+  PICTURE_URL: https://picsum.photos/1200
+  TODO_BACKEND_URL: http://todo-backend:8080/todos

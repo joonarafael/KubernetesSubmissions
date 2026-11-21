@@ -5,7 +5,6 @@ import {
     storeCachedImage,
 } from './image-file.js';
 
-const DEFAULT_PICTURE_URL = 'https://picsum.photos/1200';
 const FETCH_TIMEOUT_MS = 15_000;
 const BYTES_PER_KIBIBYTE = 1024;
 const KIBIBYTES_PER_MEBIBYTE = 1024;
@@ -57,7 +56,7 @@ function pictureFromBuffer(buffer: ArrayBuffer, contentType: string): CachedImag
 
 export function pictureUrl(value: string | undefined): string {
     if (typeof value !== 'string' || value === '') {
-        return DEFAULT_PICTURE_URL;
+        throw new Error('PICTURE_URL is not configured');
     }
 
     return value;
