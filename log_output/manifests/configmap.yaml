@@ -1,0 +1,11 @@
+# Apply from the repository root:
+#   kubectl apply -f log_output/manifests/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-output-config
+  namespace: exercises
+data:
+  information.txt: |
+    this text is from file
+  MESSAGE: hello world

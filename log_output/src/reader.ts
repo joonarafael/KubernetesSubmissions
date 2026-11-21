@@ -13,9 +13,11 @@ const FILE_NOT_FOUND = 'ENOENT';
 
 const filePath = logFilePath(process.env.LOG_FILE);
 const pingUrl = pingPongUrl(process.env.PING_PONG_URL);
+const message = process.env.MESSAGE ?? '';
+const informationFile = process.env.INFORMATION_FILE;
 
-function statusResponse(logContent: string, pingCount: number): string {
-    return `${logContent.trim()}.\nPing / Pongs: ${pingCount}\n`;
+function statusResponse(logContent: string, pingCount: number, informationContent: string): string {
+    return `file content: ${informationContent.trim()}\nenv variable: MESSAGE=${message}\n${logContent.trim()}.\nPing / Pongs: ${pingCount}\n`;
 }
 
 function parsePort(value: string | undefined): number {
@@ -78,13 +80,27 @@ function sendReadError(response: ServerResponse, error: unknown): void {
 }
 
 function sendStatus(response: ServerResponse): void {
-    readFile(filePath, 'utf8')
-        .then((content) =>
-            readPingCount(pingUrl).then((pingCount) => {
-                sendText(response, HTTP_OK, statusResponse(content, pingCount));
-            }),
-        )
+    if (typeof informationFile !== 'string' || informationFile === '') {
+        sendText(response, HTTP_SERVICE_UNAVAILABLE, 'Information file is not configured\n');
+
+        return;
+    }
+
+    const logPromise = readFile(filePath, 'utf8');
+    const informationPromise = readFile(informationFile, 'utf8');
+    const pingPromise = readPingCount(pingUrl);
+
+    Promise.all([logPromise, informationPromise, pingPromise])
+        .then(([logContent, informationContent, pingCount]) => {
+            sendText(response, HTTP_OK, statusResponse(logContent, pingCount, informationContent));
+        })
         .catch((error: unknown) => {
+            if (isFileNotFound(error)) {
+                sendText(response, HTTP_SERVICE_UNAVAILABLE, 'A required file is not available\n');
+
+                return;
+            }
+
             sendReadError(response, error);
         });
 }
