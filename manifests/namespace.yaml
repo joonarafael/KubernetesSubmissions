@@ -1,0 +1,6 @@
+# Apply from the repository root:
+#   kubectl apply -f manifests/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: exercises
