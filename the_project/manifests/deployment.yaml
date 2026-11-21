@@ -24,7 +24,7 @@ spec:
             claimName: todo-image
       containers:
         - name: todo-app
-          image: todo-app:1.13
+          image: todo-app:2.2
           imagePullPolicy: IfNotPresent
           env:
             - name: PORT
@@ -35,6 +35,8 @@ spec:
               value: '600'
             - name: PICTURE_URL
               value: https://picsum.photos/1200
+            - name: TODO_BACKEND_URL
+              value: http://todo-backend:8080/todos
           ports:
             - name: http
               containerPort: 8080
