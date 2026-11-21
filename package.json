@@ -5,7 +5,8 @@
     "workspaces": [
         "log_output",
         "ping_pong",
-        "the_project"
+        "the_project",
+        "todo_backend"
     ],
     "type": "module",
     "scripts": {
