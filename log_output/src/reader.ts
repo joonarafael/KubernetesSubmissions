@@ -1,5 +1,5 @@
-import { pingFilePath, readPingCount } from './ping-file.js';
-import { createServer } from 'node:http';
+import { type IncomingMessage, type ServerResponse, createServer } from 'node:http';
+import { isPingCountError, pingPongUrl, readPingCount } from './ping-count.js';
 import { logFilePath } from './log-file.js';
 import { readFile } from 'node:fs/promises';
 
@@ -12,7 +12,7 @@ const HTTP_SERVICE_UNAVAILABLE = 503;
 const FILE_NOT_FOUND = 'ENOENT';
 
 const filePath = logFilePath(process.env.LOG_FILE);
-const pingPath = pingFilePath(process.env.PING_FILE);
+const pingUrl = pingPongUrl(process.env.PING_PONG_URL);
 
 function statusResponse(logContent: string, pingCount: number): string {
     return `${logContent.trim()}.\nPing / Pongs: ${pingCount}\n`;
@@ -55,36 +55,51 @@ function isFileNotFound(error: unknown): boolean {
 
 const port = parsePort(process.env.PORT);
 
-const server = createServer((request, response) => {
-    if (request.method !== 'GET' || requestPath(request.url) !== '/') {
-        response.writeHead(HTTP_NOT_FOUND, { 'content-type': 'text/plain; charset=utf-8' });
-        response.end('Not found\n');
+function sendText(response: ServerResponse, status: number, body: string): void {
+    response.writeHead(status, { 'content-type': 'text/plain; charset=utf-8' });
+    response.end(body);
+}
+
+function sendReadError(response: ServerResponse, error: unknown): void {
+    if (isFileNotFound(error)) {
+        sendText(response, HTTP_SERVICE_UNAVAILABLE, 'Log file is not available yet\n');
 
         return;
     }
 
+    if (isPingCountError(error)) {
+        console.log(`Failed to read ping count: ${error.message}`);
+        sendText(response, HTTP_SERVICE_UNAVAILABLE, 'Ping count is not available\n');
+
+        return;
+    }
+
+    sendText(response, HTTP_INTERNAL_SERVER_ERROR, 'Failed to read log file\n');
+}
+
+function sendStatus(response: ServerResponse): void {
     readFile(filePath, 'utf8')
         .then((content) =>
-            readPingCount(pingPath).then((pingCount) => {
-                response.writeHead(HTTP_OK, { 'content-type': 'text/plain; charset=utf-8' });
-                response.end(statusResponse(content, pingCount));
+            readPingCount(pingUrl).then((pingCount) => {
+                sendText(response, HTTP_OK, statusResponse(content, pingCount));
             }),
         )
         .catch((error: unknown) => {
-            if (isFileNotFound(error)) {
-                response.writeHead(HTTP_SERVICE_UNAVAILABLE, {
-                    'content-type': 'text/plain; charset=utf-8',
-                });
-                response.end('Log file is not available yet\n');
-                return;
-            }
-
-            response.writeHead(HTTP_INTERNAL_SERVER_ERROR, {
-                'content-type': 'text/plain; charset=utf-8',
-            });
-            response.end('Failed to read log file\n');
+            sendReadError(response, error);
         });
-});
+}
+
+function handleRequest(request: IncomingMessage, response: ServerResponse): void {
+    if (request.method !== 'GET' || requestPath(request.url) !== '/') {
+        sendText(response, HTTP_NOT_FOUND, 'Not found\n');
+
+        return;
+    }
+
+    sendStatus(response);
+}
+
+const server = createServer(handleRequest);
 
 server.listen(port, '0.0.0.0', () => {
     const address = server.address();
@@ -95,7 +110,7 @@ server.listen(port, '0.0.0.0', () => {
     }
 
     console.log(`Reading log file ${filePath}`);
-    console.log(`Reading ping count ${pingPath}`);
+    console.log(`Reading ping count ${pingUrl}`);
     console.log(`Server started in port ${boundPort}`);
 });
 

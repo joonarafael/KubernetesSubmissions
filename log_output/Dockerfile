@@ -1,5 +1,5 @@
 # Build from the repository root:
-#   docker build -f log_output/Dockerfile -t log-output:1.11 .
+#   docker build -f log_output/Dockerfile -t log-output:2.1 .
 FROM node:26-alpine AS build
 
 WORKDIR /app
