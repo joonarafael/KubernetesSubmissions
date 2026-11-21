@@ -1,10 +1,12 @@
 # Apply from the repository root:
+#   kubectl apply -f manifests/namespace.yaml
 #   kubectl apply -f log_output/manifests/deployment.yaml
 # The log file is shared only by the writer and reader in this pod.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: log-output
+  namespace: exercises
 spec:
   replicas: 1
   selector:
