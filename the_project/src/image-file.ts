@@ -1,13 +1,10 @@
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const DEFAULT_IMAGE_DIR = '/usr/src/app/files';
 const MILLISECONDS_PER_SECOND = 1000;
 const SECONDS_PER_MINUTE = 60;
 const MINUTES_PER_HOUR = 60;
 const HOURS_PER_DAY = 24;
-const CACHED_MINUTES = 10;
-const DEFAULT_MAX_AGE_SECONDS = CACHED_MINUTES * SECONDS_PER_MINUTE;
 const MAX_MAX_AGE_SECONDS = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE;
 const MIN_FETCHED_AT = 0;
 const IMAGE_FILE_NAME = 'image';
@@ -28,7 +25,7 @@ interface ImageMeta {
 
 export function imageDirectory(value: string | undefined): string {
     if (typeof value !== 'string' || value === '') {
-        return DEFAULT_IMAGE_DIR;
+        throw new Error('IMAGE_DIR is not configured');
     }
 
     return value;
@@ -36,7 +33,7 @@ export function imageDirectory(value: string | undefined): string {
 
 export function imageMaxAgeMs(value: string | undefined): number {
     if (typeof value !== 'string' || value === '') {
-        return DEFAULT_MAX_AGE_SECONDS * MILLISECONDS_PER_SECOND;
+        throw new Error('IMAGE_MAX_AGE_SECONDS is not configured');
     }
 
     if (!/^\d{1,5}$/u.test(value)) {

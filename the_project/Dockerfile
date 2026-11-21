@@ -1,5 +1,5 @@
 # Build from the repository root:
-#   docker build -f the_project/Dockerfile -t todo-app:2.2 .
+#   docker build -f the_project/Dockerfile -t todo-app:2.6 .
 FROM node:26-alpine AS build
 
 WORKDIR /app
