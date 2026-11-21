@@ -1,12 +1,12 @@
-import { pingFilePath, readPingCount, writePingCount } from './ping-file.js';
-import { createServer } from 'node:http';
+import { type IncomingMessage, type ServerResponse, createServer } from 'node:http';
 
 const DEFAULT_PORT = 8080;
 const MAX_PORT = 65_535;
 const HTTP_OK = 200;
 const HTTP_NOT_FOUND = 404;
-const HTTP_INTERNAL_SERVER_ERROR = 500;
 const PINGPONG_PATH = '/pingpong';
+const PINGS_PATH = '/pings';
+const INITIAL_PING_COUNT = 0;
 const REQUEST_INCREMENT = 1;
 
 function parsePort(value: string | undefined): number {
@@ -34,62 +34,49 @@ function requestPath(url = '/'): string {
     }
 }
 
-function errorMessage(error: unknown): string {
-    if (error instanceof Error) {
-        return error.message;
-    }
-
-    return 'Unknown error';
-}
-
 const port = parsePort(process.env.PORT);
-const pingFile = pingFilePath(process.env.PING_FILE);
 
-const writeSettled: Promise<void> = Promise.resolve();
+let requestCount = INITIAL_PING_COUNT;
 
-let requestCount = await readPingCount(pingFile);
-let pendingWrite: Promise<void> = writeSettled;
+function recordPing(): string {
+    const responseCount = requestCount;
+    requestCount += REQUEST_INCREMENT;
 
-function recordPing(): Promise<string> {
-    const recorded = pendingWrite.then(() => {
-        const responseCount = requestCount;
-        const storedCount = requestCount + REQUEST_INCREMENT;
-
-        return writePingCount(pingFile, storedCount).then(() => {
-            requestCount = storedCount;
-            return `pong ${responseCount}`;
-        });
-    });
-
-    pendingWrite = recorded.then(
-        () => writeSettled,
-        () => writeSettled,
-    );
-
-    return recorded;
+    return `pong ${responseCount}`;
 }
 
-const server = createServer((request, response) => {
-    if (request.method === 'GET' && requestPath(request.url) === PINGPONG_PATH) {
-        recordPing()
-            .then((body) => {
-                response.writeHead(HTTP_OK, { 'content-type': 'text/plain; charset=utf-8' });
-                response.end(`${body}\n`);
-            })
-            .catch((error: unknown) => {
-                console.log(`Failed to store ping count: ${errorMessage(error)}`);
+function sendText(response: ServerResponse, status: number, body: string): void {
+    response.writeHead(status, { 'content-type': 'text/plain; charset=utf-8' });
+    response.end(body);
+}
 
-                response.writeHead(HTTP_INTERNAL_SERVER_ERROR, {
-                    'content-type': 'text/plain; charset=utf-8',
-                });
-                response.end('Failed to store ping count\n');
-            });
+function handleGet(response: ServerResponse, pathName: string): void {
+    if (pathName === PINGS_PATH) {
+        sendText(response, HTTP_OK, `${requestCount}\n`);
+
         return;
     }
 
-    response.writeHead(HTTP_NOT_FOUND, { 'content-type': 'text/plain; charset=utf-8' });
-    response.end('Not found\n');
-});
+    if (pathName === PINGPONG_PATH) {
+        sendText(response, HTTP_OK, `${recordPing()}\n`);
+
+        return;
+    }
+
+    sendText(response, HTTP_NOT_FOUND, 'Not found\n');
+}
+
+function handleRequest(request: IncomingMessage, response: ServerResponse): void {
+    if (request.method !== 'GET') {
+        sendText(response, HTTP_NOT_FOUND, 'Not found\n');
+
+        return;
+    }
+
+    handleGet(response, requestPath(request.url));
+}
+
+const server = createServer(handleRequest);
 
 server.listen(port, '0.0.0.0', () => {
     const address = server.address();
