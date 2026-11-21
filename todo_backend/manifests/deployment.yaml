@@ -1,10 +1,12 @@
 # Apply from the repository root:
+#   kubectl apply -f manifests/namespace.yaml
 #   kubectl apply -f todo_backend/manifests/deployment.yaml
 # The todo list is stored in memory, so this stays at one replica.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-backend
+  namespace: project
 spec:
   replicas: 1
   selector:

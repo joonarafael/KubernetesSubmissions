@@ -1,10 +1,12 @@
 # Claim for the todo app picture cache.
 # Apply from the repository root:
+#   kubectl apply -f manifests/namespace.yaml
 #   kubectl apply -f the_project/manifests/persistentvolumeclaim.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: todo-image
+  namespace: project
 spec:
   storageClassName: todo-image
   accessModes:
