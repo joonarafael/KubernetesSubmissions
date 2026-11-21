@@ -1,4 +1,5 @@
 # Apply from the repository root, after the project volume manifests:
+#   kubectl apply -f manifests/namespace.yaml
 #   kubectl apply -f the_project/manifests/persistentvolume.yaml
 #   kubectl apply -f the_project/manifests/persistentvolumeclaim.yaml
 #   kubectl apply -f the_project/manifests/deployment.yaml
@@ -6,6 +7,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-app
+  namespace: project
 spec:
   replicas: 1
   selector:

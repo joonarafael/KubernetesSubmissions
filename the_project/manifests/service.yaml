@@ -1,9 +1,11 @@
 # Apply from the repository root:
+#   kubectl apply -f manifests/namespace.yaml
 #   kubectl apply -f the_project/manifests/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: todo-app
+  namespace: project
 spec:
   type: ClusterIP
   selector:
